@@ -11,9 +11,22 @@
             padding: 0;
             box-sizing: border-box;
         }
-        html {
-            overflow-x: hidden; /* only hides horizontal scroll */
-            height: auto;
+
+       html, body {
+            height: auto !important;
+            overflow: visible !important;
+        }
+            
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html, body {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
         }
 
         body {
@@ -398,12 +411,16 @@
 
     </div>
     <script>
-        function resizeIframe() {
-            const height = document.body.scrollHeight;
-            window.parent.postMessage({ type: 'resize', height: height }, '*');
+        function sendHeight() {
+            const height = document.documentElement.scrollHeight;
+            window.parent.postMessage({ frameHeight: height }, '*');
         }
-        window.addEventListener('load', resizeIframe);
-        window.addEventListener('resize', resizeIframe);
+
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+
+        // Keep checking in case content shifts
+        setInterval(sendHeight, 500);
     </script>
 </body>
 
